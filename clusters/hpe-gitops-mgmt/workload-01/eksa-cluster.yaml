@@ -1,0 +1,56 @@
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: Cluster
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/skip-ip-check: "true"
+  name: dell-gitops-workload
+  namespace: default
+spec:
+  clusterNetwork:
+    cniConfig:
+      cilium: {}
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    services:
+      cidrBlocks:
+      - 10.96.0.0/12
+  controlPlaneConfiguration:
+    count: 1
+    endpoint:
+      host: "10.69.201.198"
+    machineGroupRef:
+      kind: TinkerbellMachineConfig
+      name: dell-gitops-workload-cp
+  datacenterRef:
+    kind: TinkerbellDatacenterConfig
+    name: dell-gitops-workload
+  kubernetesVersion: "1.29"
+  managementCluster:
+    name: hpe-gitops-mgmt
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: TinkerbellDatacenterConfig
+metadata:
+  name: dell-gitops-workload
+  namespace: default
+spec:
+  hookImagesURLPath: "http://10.69.201.187:8000/hookos"
+  osImageURL: "http://10.69.201.187:8000/v1_29/ubuntu-2204-kube-1-29.gz"
+  tinkerbellIP: "10.69.201.179"
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: TinkerbellMachineConfig
+metadata:
+  name: dell-gitops-workload-cp
+  namespace: default
+spec:
+  hardwareSelector:
+    type: cp
+  osFamily: ubuntu
+  templateRef: {}
+  users:
+  - name: eksa-user
+    sshAuthorizedKeys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDatbsyuNBJsjQLKRVmCqSqIGAbnRDyeULriPl8aMrOOpuDqKjeKu+oF1l+hQyMha7PBOTYwZDs5NUhgBn5Fmq/A6WHq9YVJUx7ROPeCdvCpiLeUqvgzFOIcaIfFtD9/63g6iZgmnEy6KZIw6spYaH2o8PB01DWpOIiqRfMZCqQf94eLus7qoCSEMcsVj8FS81JrWAqtlVPzIIn8bthka2ybnO+KFQI2JHdJPwr7FGCjDDmJFRyCLuPcx5QvSCt0NMy3wTUFhRIlCXh69DN8ClvIsk9fCyPaTavxKUClB8/YPN0OL0553cTAKnV3GNXJl+KmGkxHXoIw9MuhLwDzLGI86PeZTWrhJ7vyrqtqpkRvcN3Ug1ZJAyELi6sWWmxhQMtIUxj47zJMBi6t3FmiK2LEvhbmf0le5+LmQiziwtY0vUkT0KqhrPF/szG5LvM6pXGZbAuwrOV7E/Y6yVJ0suYAbDHeTo3NYO/RgasKDd+n0SEme9HQZcOOAEPiGYQf7U73ag1V/JvtU2CpXnzzncCL9mwiR+eyi/mAa5ilpRR0tyi3iGCqJ4qxD+OCOWA/akuGK5f+y7+Iutn12HHet9Nn76re/ErProh2sUl9Wek1FqcSypgYQKAUFHp15zHHncP8+6hRXq2ZZg0651yH4Ci42ktucjNGeKwkVf9gl9efQ==
