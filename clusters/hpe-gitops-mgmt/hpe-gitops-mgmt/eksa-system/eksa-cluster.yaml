@@ -1,0 +1,89 @@
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: Cluster
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/managed-by-cli: "true"
+    anywhere.eks.amazonaws.com/management-components-version: v0.20.8
+    anywhere.eks.amazonaws.com/skip-ip-check: "true"
+  name: hpe-gitops-mgmt
+  namespace: default
+spec:
+  clusterNetwork:
+    cniConfig:
+      cilium: {}
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    services:
+      cidrBlocks:
+      - 10.96.0.0/12
+  controlPlaneConfiguration:
+    count: 1
+    endpoint:
+      host: 10.69.201.178
+    machineGroupRef:
+      kind: TinkerbellMachineConfig
+      name: hpe-gitops-mgmt-cp
+    machineHealthCheck:
+      maxUnhealthy: 100%
+  datacenterRef:
+    kind: TinkerbellDatacenterConfig
+    name: hpe-gitops-mgmt
+  eksaVersion: v0.20.8
+  gitOpsRef:
+    kind: FluxConfig
+    name: hpe-gitops-mgmt
+  kubernetesVersion: "1.29"
+  machineHealthCheck:
+    maxUnhealthy: 100%
+    nodeStartupTimeout: 20m0s
+    unhealthyMachineTimeout: 5m0s
+  managementCluster:
+    name: hpe-gitops-mgmt
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: TinkerbellDatacenterConfig
+metadata:
+  name: hpe-gitops-mgmt
+  namespace: default
+spec:
+  hookImagesURLPath: http://10.69.201.187:8000/hookos
+  osImageURL: http://10.69.201.187:8000/v1_29/ubuntu-2204-kube-1-29.gz
+  tinkerbellIP: 10.69.201.179
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: TinkerbellMachineConfig
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/control-plane: "true"
+  name: hpe-gitops-mgmt-cp
+  namespace: default
+spec:
+  hardwareSelector:
+    type: cp
+  osFamily: ubuntu
+  osImageURL: ""
+  templateRef: {}
+  users:
+  - name: eksa-user
+    sshAuthorizedKeys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDWJeBDvqxL5ZDig7vhVl3tJpro+jI/mV8v77Eqi3EyTzY91hys1OEx+XLxAx4NzYzB0Dg8mSnsxF9twp7YTWoElKSYN48EIes7Ru1VhFOZmrN1xcTehTy2jKIBWVWDSS8Wz55ImfESg+KLnS+IEeqB1YCalVEIWrw2gpzx/oH77eBMXtbIkud532pPnhIXQsdr8ERa8pcasAWLlHoMxQnfVGe1w9AixYI3Y6Ip/xXzW8lUNp90+QOlhN9QXoSBhOZq+iNwUtMU1po38JXd7g0/dGGdgm5B+C3HKcB7oep5WVD+D5y8oskNgUa59aD9cNbQGPG2sSZB4UERB2TYrybobjsoSY+RPJ56blB24K6GyXleayXfKLTfIvadyWr2P7/WJrj3y3mBx8gv+Rl9dD3PQcJnOSMB83ZjBfTFv+ldTTrtExmAeCEyp4G8D4n1WCSXDoR7zEh1D7Q+w9e1gS66ckdobiDiCL8KQSx5hAs8RElbQuvyZJSHRJQf+3uBrH+p0B7sWP7fmKoFwGZySiihPvLKk89giFayPnC4tcbQkI8w7IdujErcuhtfa4tZ7iEIDMM3pHWnDEjI1uL8Nib1GvMixK/kvyf4N+X7LIxV4IocKYG6hzurG+DgnlmgoVlHZL8eBuOtiSWcKkbA9SFKNhG3GpXGAFx8hC7AmWxMDw==
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: FluxConfig
+metadata:
+  name: hpe-gitops-mgmt
+  namespace: default
+spec:
+  branch: main
+  clusterConfigPath: clusters/hpe-gitops-mgmt
+  github:
+    owner: awseksa
+    personal: true
+    repository: cluster-definitions
+  systemNamespace: flux-system
+
+---
