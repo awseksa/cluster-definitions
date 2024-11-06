@@ -22,7 +22,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: git-components
+    name: deploy-flux
     namespace: flux-system
   decryption:
     provider: sops
