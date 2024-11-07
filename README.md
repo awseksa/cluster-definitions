@@ -19,7 +19,8 @@ cluster-definitions
 │          ├── eksa-cluster.yaml
 │          └── kustombootstrap.yaml
 └── README.md
-3.	Cluster components repo contains application deployment and flux configuration files created and uploaded manually.
+```
+2.	Cluster components repo contains application deployment and flux configuration files created and uploaded manually.
 ```bash
 cluster-components
 ├── components
@@ -31,9 +32,7 @@ cluster-components
 │   └── nginx
 │       └── nginx.yaml     
 └── README.md
-
-
-
+```
 
 Workflow architecture:
  
