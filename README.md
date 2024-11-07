@@ -3,6 +3,7 @@ Flux installation using Kustomization on workload clusters
 Create two git main repositories to store management and workload clusters.
 1.	Cluster definitions repo contains management cluster, flux configuration and workload cluster configuration files.
 •	Create a folder with your workload cluster name and upload the cluster configuration file and kustomization file.
+```bash
 cluster-definitions
 ├── clusters
 │   └──hpe-gitops-mgmt
@@ -18,7 +19,8 @@ cluster-definitions
 │          ├── eksa-cluster.yaml
 │          └── kustombootstrap.yaml
 └── README.md
-2.	Cluster components repo contains application deployment and flux configuration files created and uploaded manually.
+3.	Cluster components repo contains application deployment and flux configuration files created and uploaded manually.
+```bash
 cluster-components
 ├── components
 │   ├── clusters
