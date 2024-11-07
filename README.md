@@ -35,7 +35,7 @@ cluster-components
 ```
 
 Workflow architecture:
- 
+ <p align="center">< ![image](https://github.com/user-attachments/assets/aaa254da-f030-43b8-8e1b-2946a79aed1e) align="center"></p>
 ![image](https://github.com/user-attachments/assets/aaa254da-f030-43b8-8e1b-2946a79aed1e)
 
   
