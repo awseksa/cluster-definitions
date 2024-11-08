@@ -1,0 +1,29 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: git-components
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  url: https://github.com/awseksa/cluster-components
+  ref:
+    branch: main
+  secretRef:
+    name: github
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: deploy-application
+  namespace: eksa-system
+spec:
+  interval: 5m
+  path: "./components/clusters/dell-gitops-workload/"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: git-components
+    namespace: flux-system
+  kubeConfig:
+    secretRef:
+      name: dell-gitops-workload-kubeconfig
