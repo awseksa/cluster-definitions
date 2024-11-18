@@ -8,7 +8,8 @@ spec:
   url: https://github.com/awseksa/cluster-components
   ref:
     branch: main
-  secretRef:    name: github
+  secretRef:
+    name: github
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
