@@ -6,7 +6,8 @@ metadata:
 spec:
   interval: 5m0s
   url: https://github.com/awseksa/cluster-components
-  ref:    branch: main
+  ref:
+    branch: main
   secretRef:
     name: github
 ---
