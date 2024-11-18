@@ -17,7 +17,8 @@ metadata:
   name: deploy-application
   namespace: eksa-system
 spec:
-  interval: 5m  path: "./components/clusters/dell-gitops-workload/"
+  interval: 5m
+  path: "./components/clusters/dell-gitops-workload/"
   prune: true
   sourceRef:
     kind: GitRepository
@@ -30,7 +31,6 @@ spec:
   kubeConfig:
     secretRef:
       name: dell-gitops-workload-kubeconfig
-
 ---
 apiVersion: v1
 kind: Secret
