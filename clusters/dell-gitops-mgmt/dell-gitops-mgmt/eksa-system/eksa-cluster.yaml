@@ -1,0 +1,89 @@
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: Cluster
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/managed-by-cli: "true"
+    anywhere.eks.amazonaws.com/management-components-version: v0.20.8
+    anywhere.eks.amazonaws.com/skip-ip-check: "true"
+  name: dell-gitops-mgmt
+  namespace: default
+spec:
+  clusterNetwork:
+    cniConfig:
+      cilium: {}
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    services:
+      cidrBlocks:
+      - 10.96.0.0/12
+  controlPlaneConfiguration:
+    count: 1
+    endpoint:
+      host: 10.69.201.208
+    machineGroupRef:
+      kind: TinkerbellMachineConfig
+      name: dell-gitops-mgmt-cp
+    machineHealthCheck:
+      maxUnhealthy: 100%
+  datacenterRef:
+    kind: TinkerbellDatacenterConfig
+    name: dell-gitops-mgmt
+  eksaVersion: v0.20.8
+  gitOpsRef:
+    kind: FluxConfig
+    name: dell-gitops-mgmt
+  kubernetesVersion: "1.29"
+  machineHealthCheck:
+    maxUnhealthy: 100%
+    nodeStartupTimeout: 20m0s
+    unhealthyMachineTimeout: 5m0s
+  managementCluster:
+    name: dell-gitops-mgmt
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: TinkerbellDatacenterConfig
+metadata:
+  name: dell-gitops-mgmt
+  namespace: default
+spec:
+  hookImagesURLPath: http://10.69.201.187:8000/hookos
+  osImageURL: http://10.69.201.187:8000/v1_29/ubuntu-2204-kube-1-29.gz
+  tinkerbellIP: 10.69.201.209
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: TinkerbellMachineConfig
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/control-plane: "true"
+  name: dell-gitops-mgmt-cp
+  namespace: default
+spec:
+  hardwareSelector:
+    type: cp
+  osFamily: ubuntu
+  osImageURL: ""
+  templateRef: {}
+  users:
+  - name: eksa-user
+    sshAuthorizedKeys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7zaEC3eunScEyiQ0HD/bW3Kzwc3NhnFIm4oNWrEK0Hz2R1us8L8+y7+fsHRs7N5R5RNLVavMNRl8fXSNBvq0EfSJJ45dBmSXQUrrvDhmag9+J9hv4l5YWNQNimVnHpf5Aph6AkW7otEdQaOUMlnETLvbAdEPUNFcTGnfdNiRXEvQ87l9dgq+TDSHOnr36gCvfRTX3hpkOA/HTz7vd4UT42Z7fwiLlp+HZy3J57JHkTZ0nl4Tjk/e1zg3zXDZqJgEWH1+fHLYrCuXGaZTc2f/XcxMDXA0cUEKgMoXRkpY2FDxgIsYnauhgcSORhdLdxTwVQhQhcebUXCraQPj3RBwbr+EevXOKAz32EvPTMBBJc6q44CUOyRn5cNw1NJxHa1mqoTFktAQfK5xJQG0rNpApnJuRCfjrCEyIOcZNeZNO107cTmNmaVge26dP5IV3adn/YlWV3KYL3X3n5GqKcNB4Mn3WzQINPbASoGkq48OYAr2catvyFPf0bqA39CF3HSo+SRZwGf7AD+40x53RN8rdY8rC/MJa64XcHOctiGdH/eNxC8BR9Zpt2is3aYlNLSPdKEvsPRcRFAG6dIOQYClryvnGSKmvbhFuDK8/XmKrUs+uqtHGPw2EI2dkbhQAYbpxyPgxL+sUHAoQzL1wBEL65adxqO+F3jsZv+Xhp2LVtQ==
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: FluxConfig
+metadata:
+  name: dell-gitops-mgmt
+  namespace: default
+spec:
+  branch: dell-03
+  clusterConfigPath: clusters/dell-gitops-mgmt
+  github:
+    owner: awseksa
+    personal: true
+    repository: cluster-definitions
+  systemNamespace: flux-system
+
+---
